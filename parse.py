@@ -1,22 +1,39 @@
 import json
 import sys
+import gzip
 from parser.yajl_helper import *
 from parser.events import *
 
-# Returns the deserialized JSON objects of interests
+def parse_inner(data_file, processor):
+	f = None
 
+	if data_file.index("gz")==len(data_file)-2:
+		f = gzip.open(data_file, 'rb')
+	else:
+		f = open(data_file, 'r')
+		
+	# Create an instance of the appropriate processor
+	parser = YajlParser(ContentHandler(processor))
+	parser.allow_multiple_values = True
+	parser.parse(f=f)
+	
+	# Parse the entire file and then commit db and close connection
+	processor.action()
+	f.close()
+
+def parse(data_file, db_file):
+	processor = BaseProcessor(db_file)
+	parse_inner(data_file, processor)
+	
 def main(args):	
-	if len(args)<2:
-		print("Usage: python program.py <db_file>")
+	if len(args)<3:
+		print("Usage: python program.py <gz_file> <db_file>")
 		sys.exit(1)
 	
-	db_file = args[1]
-
-	# Create an instance of the appropriate processor
-	processor = BaseProcessor(db_file)
-	parser = YajlParser(ContentHandler(processor.process))
-	parser.allow_multiple_values = True
-	parser.parse()
+	data_file = args[1]
+	db_file = args[2]
+	
+	parse(data_file, db_file)	
 	return 0
 
 if __name__ == "__main__":

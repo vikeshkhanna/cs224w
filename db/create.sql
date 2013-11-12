@@ -42,7 +42,6 @@ create table pull(
 create table issue(
 	actor text,
 	repo_name text,
-	status text NOT NULL,
 	created_at datetime NOT NULL,
 	constraint fk_issue_userid foreign key(actor) references user(userid),
 	constraint fk_issue_repo foreign key(repo_name) references repository(name)

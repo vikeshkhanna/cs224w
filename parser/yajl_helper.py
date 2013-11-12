@@ -51,7 +51,7 @@ class ContentHandler(YajlContentHandler):
 			# This is required for both inner and outmost JSON objects
 			self.prune()
 			self.js += "}"
-			self.processor(self.js)
+			self.processor.process(self.js)
 			self.js = ""
 		else:
 			# Remove extraneous ',' if present. 

@@ -15,21 +15,27 @@ from db.interface import *
 # Do the jazz. 
 class BaseProcessor:
 	def __init__(self, db_file):
-		self.db_file = db_file
+		self.db = DB(db_file)
 	def process(self, js):
 		try:
 			obj = json.loads(js)
 			target_event = obj['type'].strip()
 
 			if target_event in Event.Events:
-				processor = Event.Processors[target_event](DB(self.db_file))
-				processor.process(obj)
+				print("Processing %s" % target_event)
+				processor = Event.Processors[target_event](self.db)
+				processor.process(obj)	
 				processor.action()
 			else:
-				print("This event is not supported: %s"%target_event)
+				pass
 		except:
 			print("BaseProcessor ERROR: %s"%js)
 			print(sys.exc_info())
+
+	def action(self):
+		print("Commiting changes")
+		self.db.commit()
+		self.db.close()
 
 # Prints a given number of json objects of the given type from the stream
 class DebugProcessor:
@@ -112,27 +118,32 @@ class ForkProcessor:
 
 	def process(self, obj):
 		try:
-			pass
+			self.userid = obj['actor']
+			self.repo = obj['repository']
+			self.created_at = obj['created_at']
 		except:
 			print("ERROR: %s"%str(obj))
 			print(sys.exc_info()[0])
 
 	def action(self):
-		pass
+		self.db.add_fork(self.userid, self.repo, self.created_at)
 
 class WatchProcessor:
 	def __init__(self, db):		
 		# User A created a repository
-		pass
+		self.db = db
+
 	def process(self, obj):
 		try:
-			pass	
+			self.userid = obj['actor']
+			self.repo = obj['repository']
+			self.created_at = obj['created_at']
 		except:
 			print("ERROR: %s"%str(obj))
 			print(sys.exc_info()[0])
 
 	def action(self):
-		pass
+		self.db.add_watch(self.userid, self.repo, self.created_at)
 
 class IssuesProcessor:
 	def __init__(self, db):		
@@ -141,13 +152,16 @@ class IssuesProcessor:
 
 	def process(self, obj):
 		try:
-			pass
+			self.userid = obj['actor']
+			self.repo = obj['repository']
+			self.created_at = obj['created_at']
+
 		except:
 			print("ERROR: %s"%str(obj))
 			print(sys.exc_info()[0])
 
 	def action(self):
-		pass
+		self.db.add_issue(self.userid, self.repo, self.created_at)
 
 class PullRequestProcessor:
 	def __init__(self, db):		
@@ -156,13 +170,16 @@ class PullRequestProcessor:
 
 	def process(self, obj):
 		try:
-			pass
+			self.userid = obj['actor']
+			self.repo = obj['repository']
+			self.status = obj['payload']['action']
+			self.created_at = obj['created_at']
 		except:
 			print("ERROR: %s"%str(obj))
 			print(sys.exc_info()[0])
 
 	def action(self):
-		pass
+		self.db.add_pull(self.userid, self.repo, self.status, self.created_at)
 
 class Event:
 	FollowEvent = 'FollowEvent'
