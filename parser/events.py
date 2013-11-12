@@ -16,16 +16,19 @@ from db.interface import *
 class BaseProcessor:
 	def __init__(self, db_file):
 		self.db = DB(db_file)
+		self.cnt = 0
+
 	def process(self, js):
 		try:
 			obj = json.loads(js)
 			target_event = obj['type'].strip()
 
 			if target_event in Event.Events:
-				print("Processing %s" % target_event)
+				#print("Processing %s" % target_event)
 				processor = Event.Processors[target_event](self.db)
 				processor.process(obj)	
 				processor.action()
+				self.cnt+=1
 			else:
 				pass
 		except:
@@ -33,7 +36,7 @@ class BaseProcessor:
 			print(sys.exc_info())
 
 	def action(self):
-		print("Commiting changes")
+		print("Processed %d relevant events. Commiting changes."%self.cnt)
 		self.db.commit()
 		self.db.close()
 
