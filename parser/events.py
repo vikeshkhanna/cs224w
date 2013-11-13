@@ -40,6 +40,9 @@ class BaseProcessor:
 		self.db.commit()
 		self.db.close()
 
+	def __exit__(self, type, value, traceback):
+		self.action()
+
 # Prints a given number of json objects of the given type from the stream
 class DebugProcessor:
 	def __init__(self, target_event, cnt=1):

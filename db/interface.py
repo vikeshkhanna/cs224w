@@ -101,7 +101,7 @@ class DB:
 
 		row = (userid, repo['name'], status, created_at)
 
-		comm = "INSERT OR IGNORE INTO pull VALUES(?,?,?,?)"
+		comm = "INSERT OR IGNORE INTO pull VALUES(?,?,?, ?)"
 		self.conn.execute(comm, row)
 	
 	def add_fork(self, userid, repo, created_at):

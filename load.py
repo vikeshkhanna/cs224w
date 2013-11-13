@@ -71,9 +71,13 @@ while date1<date2:
 		#parse
 		try:
 			parse(data_file, db_file)
+		except:
+			print("Could not parse the file: %s. Reason: %s" % (data_file, sys.exc_info()))
+		
+		try:
 			os.remove(data_file)
 		except:
-			print("Could not parse/remove the file: %s. Reason: %s" % (data_file, sys.exc_info()))
+			print("Could not remove the file: %s. Reason: %s" % (data_file, sys.exc_info()))
 
 	else:
 		data_path = os.path.join(data_root, data_file)

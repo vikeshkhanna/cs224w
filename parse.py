@@ -17,13 +17,18 @@ def parse_inner(data_file, processor):
 	parser.allow_multiple_values = True
 	parser.parse(f=f)
 	
-	# Parse the entire file and then commit db and close connection
-	processor.action()
 	f.close()
 
 def parse(data_file, db_file):
 	processor = BaseProcessor(db_file)
-	parse_inner(data_file, processor)
+	
+	try:
+		parse_inner(data_file, processor)
+	except:
+		pass
+
+	# Parse the entire file and then commit db and close connection
+	processor.action()
 	
 def main(args):	
 	if len(args)<3:
