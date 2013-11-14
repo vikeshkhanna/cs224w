@@ -1,5 +1,3 @@
-.output collaborators.out
-
 select A.userid, B.userid 
 from collaborate A, collaborate B 
 where 

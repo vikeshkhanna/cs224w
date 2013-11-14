@@ -1,10 +1,9 @@
 set ylabel "Fraction of nodes"
 set xlabel "Degree"
-set title "Degree distribution"
+set title TITLE
 
 set autoscale
 set logscale
 
-plot 'degree.dat' using 1:2 title "Degree Distribution"
+plot FILENAME using 1:2 title "Degree Distribution"
 
-pause -1
