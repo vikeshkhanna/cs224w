@@ -1,32 +1,29 @@
 import sqlite3
 import os
 
-class DB:
-	DB_FILE='github.db'
-	CREATE_FILE='create.sql'
-
+class DBBase:
 	def __init__(self, db_file):
-		self.DB_PATH = os.path.abspath(db_file)
-		self.CREATE_PATH = os.path.join(os.path.join(self.DB_PATH, os.pardir), DB.CREATE_FILE)
-		self.conn = self.connect()		
-
-	def create(self):
-		if not os.path.exists(self.DB_PATH):
-			f = open(self.CREATE_PATH)
-			commands = f.read().replace("\n","").replace("\t","").split(";")
-			conn = self.conn()
-			
-			for comm in commands:
-				conn.execute(comm)
+		self.db_file = os.path.abspath(db_file)
+		self.conn = self.connect()
 
 	def connect(self):
-		return sqlite3.connect(self.DB_PATH)
+		return sqlite3.connect(self.db_file)
 
 	def commit(self):
 		self.conn.commit()
 
 	def close(self):
 		self.conn.close()
+
+	def __exit__(self):	
+		try:
+			self.close()
+		except:
+			pass
+
+class DBWriter(DBBase):
+	DB_FILE='github.db'
+	CREATE_FILE='create.sql'
 
 	# returns the tuple - (userid, location)
 	def get_user(self, userid):
@@ -126,4 +123,19 @@ class DB:
 	
 	def make_user(self, login, location=None):
 		return {"login":login, "location":location}
+
+class DBReader(DBBase):
+	pass	
 		
+	def collaborators(self):
+		comm = "SELECT * from collaborate";
+		return self.conn.execute(comm).fetchall()
+
+	def followers(self):
+		comm = "SELECT * from follows";
+		return self.conn.execute(comm).fetchall()
+
+	# returns the cursor
+	def execute(self, comm):
+		return self.conn.execute(comm)
+

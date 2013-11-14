@@ -15,7 +15,7 @@ from db.interface import *
 # Do the jazz. 
 class BaseProcessor:
 	def __init__(self, db_file):
-		self.db = DB(db_file)
+		self.db = DBWriter(db_file)
 		self.cnt = 0
 
 	def process(self, js):
