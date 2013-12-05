@@ -1,5 +1,9 @@
 import sqlite3
 import os
+import dateutil.parser
+import datetime
+import pytz
+utc = pytz.UTC
 
 class DBBase:
 	def __init__(self, db_file):
@@ -124,18 +128,76 @@ class DBWriter(DBBase):
 	def make_user(self, login, location=None):
 		return {"login":login, "location":location}
 
+class DBReadQuery:
+	pass
+
 class DBReader(DBBase):
-	pass	
+	def uid(self):
+		comm = "SELECT rowid, userid FROM user"
+		rows = self.conn.execute(comm).fetchall()
+		cache = {row[1]:row[0] for row in rows}
+		return cache
 		
-	def collaborators(self):
-		comm = "SELECT * from collaborate";
+	# Date format must be - YYYY-MM-DD HH:mm:ss
+	def clip(self, rows, index, min_date, max_date):
+		result = []
+
+		if min_date!=None and max_date!=None:
+			d1 = dateutil.parser.parse(min_date)
+			d2 = dateutil.parser.parse(max_date)
+
+			for row in rows:
+				d = dateutil.parser.parse(row[index])
+				d = d.replace(tzinfo=None)
+
+				if d>=d1 and d<=d2:
+					result.append(row)
+		else:
+			result = rows
+
+		return result
+
+	def dbclip(self, comm, min_date, max_date):
+		suffix = ''
+
+		if min_date!=None and max_date!=None:
+			suffix = " WHERE julianday(created_at) >= julianday('%s') and julianday(created_at) <= julianday('%s')"%(min_date, max_date)
+		elif min_date!=None:
+			suffix = " WHERE julianday(created_at) >= julianday('%s')"%(min_date)
+		elif max_date!=None:
+			suffix = " WHERE julianday(created_at) <= julianday('%s')"%(max_date)
+
+		return (comm + suffix)
+		
+	
+	# Date format must be - YYYY-MM-DD HH:mm:ss
+	def collaborators(self, min_date=None, max_date=None):
+		comm = DBReadQuery.all_collaborators
+		comm = self.dbclip(comm, min_date, max_date)	
+		return self.conn.execute(comm).fetchall()
+		#return self.clip(rows, 2, min_date, max_date)
+	
+
+	# Date format must be - YYYY-MM-DD HH:mm:ss
+	def followers(self, min_date=None, max_date=None):
+		comm = DBReadQuery.all_followers
+		comm = self.dbclip(comm, min_date, max_date)
 		return self.conn.execute(comm).fetchall()
 
-	def followers(self):
-		comm = "SELECT * from follows";
+	def pull(self, min_date=None, max_date=None):
+		comm = self.dbclip(DBReadQuery.all_pull, min_date, max_date)
+		return self.conn.execute(comm).fetchall()
+
+	def watch(self, min_date=None, max_date=None):
+		comm = self.dbclip(DBReadQuery.all_watch, min_date, max_date)
 		return self.conn.execute(comm).fetchall()
 
 	# returns the cursor
 	def execute(self, comm):
 		return self.conn.execute(comm)
 
+class DBReadQuery:
+	all_collaborators = "SELECT * FROM (SELECT A.userid, B.userid, max(A.created_at, B.created_at) created_at from collaborate A, collaborate B where A.repo_name=B.repo_name and A.userid<B.userid union select C.userid, R.owner, C.created_at from collaborate C, repository R where C.repo_name=R.name)"
+	all_followers = "SELECT * FROM follows"
+	all_pull = "SELECT * FROM pull"
+	all_watch = "SELECT * FROM watch"

@@ -1,0 +1,9 @@
+set ylabel "Fraction of WCCs"
+set xlabel "Component size"
+set title TITLE
+
+set autoscale
+set logscale
+
+plot FILENAME using 1:2 title "WCC size"
+

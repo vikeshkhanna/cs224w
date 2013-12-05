@@ -87,3 +87,5 @@ create table watch(
 
 create index if not exists index_watch_repo on watch(repo_name);
 create index if not exists index_watch_actor on watch(actor);
+
+create table duration(start_date datetime, end_date datetime);

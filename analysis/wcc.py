@@ -9,11 +9,14 @@ def main(args):
 		sys.exit(1)
 	
 	G = get_graph(args[0])
-	hist = get_degree_histogram(G)
-	n = G.GetNodes()
+	hist = get_wcc_histogram(G)
+	n = sum([item[1] for item in hist])
+
+	print("# WCC Histogram : ")
 
 	for pair in hist:
-		print("%d\t%f"%(pair[0], float(pair[1])/n))	
+		print("%d\t%f"%(pair[0], float(pair[1])/n))
+
 
 if __name__=="__main__":
 	main(sys.argv[1:])
