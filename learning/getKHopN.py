@@ -1,7 +1,7 @@
-import snap
+import snappy.snap as snap
 
 def getKHopN(G, node, k):
-	s= set()
+	s = set()
 	for i in range(1, k+1):
 		v= snap.TIntV()
 		snap.GetNodesAtHop(G, node, i, v, False)

@@ -196,8 +196,18 @@ class DBReader(DBBase):
 	def execute(self, comm):
 		return self.conn.execute(comm)
 
+# optimize
 class DBReadQuery:
+	'''
 	all_collaborators = "SELECT * FROM (SELECT A.userid, B.userid, max(A.created_at, B.created_at) created_at from collaborate A, collaborate B where A.repo_name=B.repo_name and A.userid<B.userid union select C.userid, R.owner, C.created_at from collaborate C, repository R where C.repo_name=R.name)"
 	all_followers = "SELECT * FROM follows"
-	all_pull = "SELECT * FROM pull"
-	all_watch = "SELECT * FROM watch"
+
+	all_pull = "SELECT * FROM (select A.actor, B.actor, max(A.created_at, B.created_at) created_at, 0 from pull A, pull B where A.repo_name = B.repo_name and A.actor < B.actor union SELECT actor, owner,pull.created_at created_at, 1 from pull, repository where pull.repo_name = repository.name)"
+
+	all_watch = "SELECT* FROM (SELECT A.actor, B.actor, max(A.created_at, B.created_at) created_at, 0 from watch A, watch B where A.repo_name = B.repo_name and A.actor < B.actor union SELECt actor, owner, watch.created_at, 1 from watch, repository where watch.repo_name = repository.name)"
+	'''
+
+	all_collaborators = "SELECT * from gcollab";
+	all_pull = "SELECT * from gpull";
+	all_followers = "SELECT *, 0 from follows";
+	all_watch = "SELECT * from gwatch";

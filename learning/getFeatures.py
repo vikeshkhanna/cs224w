@@ -1,5 +1,5 @@
 # filters the pairs of nodes in 'pairs' and returns features from featG for pairs such that both nodes are present in featG
-import snap
+import snappy.snap as snap 
 from getCoefficients import *
 
 def getFeatures(baseG, featG, pairs):
@@ -17,15 +17,17 @@ def getFeatures(baseG, featG, pairs):
 			# delete this pair from the pair dict
 			delset.add((u, v))
 			continue
+
 		uFNode= featG.GetNI(u)
 		vFNode= featG.GetNI(v)
 		# calculate all coefficients for u, v
-		pairs[(u, v)].append(featG.IsEdge(u, v))  # featG must be undirected 
+		pairs[(u, v)].append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
 		pairs[(u, v)].append(getCommonNeighbor(uFNode, vFNode))
 		pairs[(u, v)].append(getJaccard(uFNode, vFNode))
 		pairs[(u, v)].append(getAdamicAdar(uFNode, vFNode))
 	
 	for (u, v) in delset:
 		del pairs[(u, v)]
+
 	return pairs
 
