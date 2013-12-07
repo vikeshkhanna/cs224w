@@ -58,3 +58,6 @@ class EUNGraph():
 			return sum([info.weight for info in self.edge_info[tup] if info.weight!=None])
 
 		return -1
+
+	def GetRndNId(self):
+		return self.G.GetRndNId()

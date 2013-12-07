@@ -26,5 +26,3 @@ print G3.GetNodes()
 watch = reader.watch()
 G4 = get_db_graph(Graph.COLLAB, uid, watch)
 print G4.GetNodes()
-
-

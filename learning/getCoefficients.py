@@ -1,26 +1,32 @@
 import snappy.snap as snap
+import math
 
-def getCommonNeighbor(u, v):
+def getCommonNeighbor(unode, vnode):
 	# find number of common neighbors of n1 and n2
-	return	len(set(list(u.GetOutEdges())).intersection(list(v.GetOutEdges())))
+	return	set(list(unode.GetOutEdges())).intersection(list(vnode.GetOutEdges()))
 
-def getJaccard(u, v):
-	score_in = getCommonNeighbor(u, v)
-	union_neighbors= set(u.GetOutEdges()).union(v.GetOutEdges())
-	if(len(union_neighbors)!=0):
+def getJaccard(unode, vnode):
+	score_in = getCommonNeighbor(unode, vnode)
+	union_neighbors = set(list(unode.GetOutEdges())).union(list(vnode.GetOutEdges()))
+
+	if(len(union_neighbors)==0):
 		return 0
-	return float(len(intersection_neighbors))/len(union_neighbors)
 
-def getAdamicAdar(u, v):
+	return float(len(score_in))/len(union_neighbors)
+
+def getAdamicAdar(G, unode, vnode):
 	# adamic- adar score
 	logsum = 0
-	intersection_neighbors = set(list(u.GetOutEdges())).intersection(list(v.GetOutEdges()))
+	intersection_neighbors = getCommonNeighbor(unode, vnode)
 
-	if(len(intersection_neighbors)!=0):
+	if(len(intersection_neighbors)==0):
 		return 0
+
 	for neighbor in intersection_neighbors:
-		logoutdeg= math.log(G_base.GetNI(neighbor).GetOutDeg())
+		logoutdeg= math.log(G.GetNI(neighbor).GetOutDeg())
+
 		if(logoutdeg!=0):
 			logsum+= 1/logoutdeg
+
 	return logsum
 
