@@ -5,6 +5,7 @@ from getCoefficients import *
 # Gets the features for the given pair of nodes. Also deletes the nodes that are not present in feature graph
 def getFeatures(baseG, featG, pairs):
 	delset= set()
+
 	# from every start node, get all the nodes which are upto k hops away.
 	for u, v in pairs:
 		uNode= baseG.GetNI(u)
@@ -13,6 +14,7 @@ def getFeatures(baseG, featG, pairs):
 		if (u > v):
 			u= u + v
 			u= u - v
+
 		# see if both of these nodes are in feat graph
 		if not (featG.IsNode(u) and featG.IsNode(v)):
 			# delete this pair from the pair dict
@@ -22,8 +24,11 @@ def getFeatures(baseG, featG, pairs):
 		uFNode= featG.GetNI(u)
 		vFNode= featG.GetNI(v)
 		tup = (u,v)
-	
-		pairs[tup] = get_features(featG, uFNode, vFNode)
+
+		features = get_features(featG, u, v)
+		
+		for feature in features:
+			pairs[tup].append(feature)
 
 	for (u, v) in delset:
 		del pairs[(u, v)]
@@ -44,9 +49,9 @@ def get_features(featG, u, v):
 
 	# calculate all coefficients for u, v
 	features.append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
-	features.append(getCommonNeighbor(uFNode, vFNode))
+	features.append(len(getCommonNeighbor(uFNode, vFNode)))
 	features.append(getJaccard(uFNode, vFNode))
-	features.append(getAdamicAdar(uFNode, vFNode))
+	features.append(getAdamicAdar(featG, uFNode, vFNode))
 
 	return features
 
