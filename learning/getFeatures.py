@@ -11,18 +11,22 @@ def getFeatures(baseG, featG, pairs):
 		uNode= baseG.GetNI(u)
 		vNode= baseG.GetNI(v)
 		# ensure that basenodeID is lower than neighborID
-		if (u > v):
+		#TODO - @Aditya - This has a bug. If u and v get swapped, the pairs cache may not have the (u,v) tuple as such causing a KeyError
+		''''
+		if u > v:
 			temp = u
 			u = v
-			v= temp			
+			v = temp			
+		'''
+
 		# see if both of these nodes are in feat graph
 		if not (featG.IsNode(u) and featG.IsNode(v)):
 			# delete this pair from the pair dict
 			delset.add((u, v))
 			continue
 
-		uFNode= featG.GetNI(u)
-		vFNode= featG.GetNI(v)
+		uFNode = featG.GetNI(u)
+		vFNode = featG.GetNI(v)
 		tup = (u,v)
 
 		features = get_features(featG, u, v)
@@ -50,8 +54,8 @@ def get_features(featG, u, v):
 	# calculate all coefficients for u, v
 	features.append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
 	features.append(len(getCommonNeighbor(uFNode, vFNode)))
-	features.append(getJaccard(uFNode, vFNode))
-	features.append(getAdamicAdar(featG, uFNode, vFNode))
+	#features.append(getJaccard(uFNode, vFNode))
+	#features.append(getAdamicAdar(featG, uFNode, vFNode))
 
 	return features
 

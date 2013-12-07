@@ -3,6 +3,8 @@ from db.interface import *
 from learning import interface
 from analysis import graphutils
 from learning import consolidateFeatures
+from mlabwrap import mlab
+import numpy as np
 
 LEARNING_ROOT="learning/"
 FEATURES="features"
@@ -35,7 +37,13 @@ def main(args):
 
 	features = consolidateFeatures.consolidate_features(base_graphs, k)
 	labels = consolidateFeatures.consolidate_labels(features, Gcollab_delta)
-	interface.write(features, labels, filepath, features_matrix_name, labels_matrix_name)
+	
+	np_train, np_output = interface.matwrapTrain(features, labels)
+	interface.writeTrain(np_train, np_output, filepath, features_matrix_name, labels_matrix_name)	
+	
+	# Add learning root to mlab path so that all .m functions are available as mlab attributes
+	mlab.path(mlab.path(), LEARNING_ROOT)	
+	mlab.training(np_train, np_output)
 	
 
 # base graph = till date1
