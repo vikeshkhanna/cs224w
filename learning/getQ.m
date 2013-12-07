@@ -2,8 +2,8 @@
 % also takes in the model from the learning phase to calculate f(w, phi(u, v))
 
 function Q= getQ(fname, beta)
-	load(strcat(fname, "_RWfeatures"));
-	load(strcat(fname, "_model"));
+	load(strcat(fname, "_RWfeatures.mat"));
+	load(strcat(fname, "_model.mat"));
 	% now matrices in memory should be Ai, Aj, Av (sparse matrix vectors), F (feature matrix with the first column being the node IDs for v and rest being features, and s which is the node ID of source node
 	% the mapping from actual IDs to new IDs is: F(newID, 1)= oldID
 	[n_nodes, n_features]= size(F);
