@@ -12,9 +12,9 @@ def getFeatures(baseG, featG, pairs):
 		vNode= baseG.GetNI(v)
 		# ensure that basenodeID is lower than neighborID
 		if (u > v):
-			u= u + v
-			u= u - v
-
+			temp = u
+			u = v
+			v= temp			
 		# see if both of these nodes are in feat graph
 		if not (featG.IsNode(u) and featG.IsNode(v)):
 			# delete this pair from the pair dict

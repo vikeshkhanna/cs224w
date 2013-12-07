@@ -13,8 +13,9 @@ Av= list()
 normalizer= [0] * 20
 for i in range(0, len(Ai)):
 	normalizer[Ai[i]-1]= normalizer[Ai[i]-1] + 1
+print normalizer
 for i in range(0, len(Ai)):
-	Av.append(1/ normalizer[Ai[i]-1])
+	Av.append(float(1)/ normalizer[Ai[i]-1])
 interface.writeSparseMat(Ai, Aj, Av, 'Ai', 'Aj', 'Av', 'test_adj.mat')
 
 
