@@ -1,14 +1,17 @@
 import snappy.snap as snap
 from getFeatures import *
 from getKHopN import *
+from analysis import graphutils
 
 # get feature graphs
 # read followgraph
 # first construct features dict consisting of every pair which is k hops away
 
-def consolidate_features(Gcollab, Gfollow, Gpull, Gwatch, Gfork):
-	k= 2	# 2 hops away
+def consolidate_features(base_graphs, k):
 	features = {}
+
+	Gcollab = base_graphs[graphutils.Graph.COLLAB]
+	feature_graphs = graphutils.split_feat_graphs(base_graphs)
 
 	for node in Gcollab.Nodes():
 		nodeID= node.GetId()
@@ -22,10 +25,8 @@ def consolidate_features(Gcollab, Gfollow, Gpull, Gwatch, Gfork):
 				continue
 			features[(nodeID, neighborID)]= []
 				
-	features = getFeatures(Gcollab, Gfollow, features)
-	features = getFeatures(Gcollab, Gpull, features)
-	features = getFeatures(Gcollab, Gwatch, features)
-	features = getFeatures(Gcollab, Gfork, features)
+	for graph_type, graph in feature_graphs.iteritems():
+		features = getFeatures(Gcollab, graph, features)
 
 	return features
 

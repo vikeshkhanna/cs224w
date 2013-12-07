@@ -2,8 +2,6 @@ import sqlite3
 import os
 import dateutil.parser
 import datetime
-import pytz
-utc = pytz.UTC
 
 class DBBase:
 	def __init__(self, db_file):
