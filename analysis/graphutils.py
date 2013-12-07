@@ -63,3 +63,12 @@ def get_db_graphs(db, uid, min_date=None, max_date=None):
 
 	reader.close()
 	return {Graph.COLLAB: Gcollab, Graph.FOLLOW:Gfollow, Graph.PULL: Gpull, Graph.WATCH: Gwatch, Graph.FORK: Gfork}
+
+def split_feat_graphs(base_graphs):
+	feature_graphs = {}
+
+	for graph_type, graph in base_graphs.iteritems():
+		if graph_type!=Graph.COLLAB:
+			feature_graphs[graph_type] = graph
+
+	return feature_graphs

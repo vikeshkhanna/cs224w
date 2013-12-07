@@ -2,6 +2,7 @@
 import snappy.snap as snap 
 from getCoefficients import *
 
+# Gets the features for the given pair of nodes. Also deletes the nodes that are not present in feature graph
 def getFeatures(baseG, featG, pairs):
 	delset= set()
 	# from every start node, get all the nodes which are upto k hops away.
@@ -20,14 +21,56 @@ def getFeatures(baseG, featG, pairs):
 
 		uFNode= featG.GetNI(u)
 		vFNode= featG.GetNI(v)
-		# calculate all coefficients for u, v
-		pairs[(u, v)].append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
-		pairs[(u, v)].append(getCommonNeighbor(uFNode, vFNode))
-		pairs[(u, v)].append(getJaccard(uFNode, vFNode))
-		pairs[(u, v)].append(getAdamicAdar(uFNode, vFNode))
+		tup = (u,v)
 	
+		pairs[tup] = get_features(featG, uFNode, vFNode)
+
 	for (u, v) in delset:
 		del pairs[(u, v)]
 
 	return pairs
 
+# Gets the features given two node IDs
+def get_features(featG, u, v):
+	features = []
+
+	# If either node does not exist in the feature graph
+	# Not the first -1 is because GetWeight returns -1 for no edge
+	if not featG.IsNode(u) or not featG.IsNode(v):
+		return [featG.GetWeight(u,v),0,0,0]
+
+	uFNode = featG.GetNI(u)
+	vFNode = featG.GetNI(v)
+
+	# calculate all coefficients for u, v
+	features.append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
+	features.append(getCommonNeighbor(uFNode, vFNode))
+	features.append(getJaccard(uFNode, vFNode))
+	features.append(getAdamicAdar(uFNode, vFNode))
+
+	return features
+
+# Get all the features for 2 nodes
+def get_all_features(feature_graphs, u, v):
+	features = []
+
+	for graph_type, graph in feature_graphs.iteritems():
+		feat = get_features(graph, u, v)
+			
+		for val in feat:
+			features.append(val)	
+
+	return features
+
+# Get a dictionary for (s,v):[features] where s is the start node and v are all other nodes - features
+def get_walk_features(Gcollab, feature_graphs, start):
+	features = {}
+
+	for vnode in Gcollab.Nodes():
+		v = vnode.GetId()
+
+		if start!=v:
+			tup = (start, v)
+			features[tup] = get_all_features(feature_graphs, start, v)
+			
+	return features
