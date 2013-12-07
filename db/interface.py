@@ -33,13 +33,26 @@ class DBWriter(DBBase):
 	def get_user(self, userid):
 		s = "SELECT * FROM user WHERE userid=?"
 		ids = (userid,)
-		self.conn.execute(s, ids)
 		cur = self.conn.cursor()
+		cur.execute(s, ids)
+		retVal = cur.fetchone()
+		cur.close()
+		return retVal
+
+	def get_repo(self, repo):
+		owner = repo['owner']
+		repo_name = repo['name']
+
+		s = "SELECT * FROM repository where owner=? and name=?"
+		ids = (owner, repo_name)
+		cur = self.conn.cursor()
+		cur.execute(s, ids)
 		retVal = cur.fetchone()
 		cur.close()
 		return retVal
 
 	# Idempotent - Only adds a user if not already present
+
 	# login, location
 	def add_user(self, user):
 		ret_val = None
@@ -73,7 +86,8 @@ class DBWriter(DBBase):
 
 		row = (repo['owner'], repo['name'], repo['watchers'], repo['forks'], language, description, repo['created_at'])
 
-		comm = "INSERT OR IGNORE INTO repository VALUES(?,?,?,?,?,?,?)"
+		# Auto-increment
+		comm = "INSERT OR IGNORE INTO repository VALUES(NULL, ?,?,?,?,?,?,?)"
 		self.conn.execute(comm, row)		
 		
 	# userid = id of user who was added as member	
@@ -81,7 +95,8 @@ class DBWriter(DBBase):
 		# First add le repo
 		self.add_user(self.make_user(userid))
 		self.add_repo(repo)
-		row = (userid, repo['name'], created_at)
+		repo_id = self.get_repo(repo)[0]
+		row = (userid, repo_id, created_at)
 
 		comm = "INSERT OR IGNORE INTO collaborate VALUES(?,?,?)"
 		self.conn.execute(comm, row)
@@ -90,7 +105,8 @@ class DBWriter(DBBase):
 		# First add le repo
 		self.add_user(self.make_user(userid))
 		self.add_repo(repo)
-		row = (userid, repo['name'], created_at)
+		repo_id = self.get_repo(repo)[0]
+		row = (userid, repo_id, created_at)
 
 		comm = "INSERT OR IGNORE INTO watch VALUES(?,?,?)"
 		self.conn.execute(comm, row)
@@ -99,8 +115,8 @@ class DBWriter(DBBase):
 		# First add le repo
 		self.add_user(self.make_user(userid))
 		self.add_repo(repo)
-
-		row = (userid, repo['name'], status, created_at)
+		repo_id = self.get_repo(repo)[0]
+		row = (userid, repo_id, status, created_at)
 
 		comm = "INSERT OR IGNORE INTO pull VALUES(?,?,?, ?)"
 		self.conn.execute(comm, row)
@@ -109,8 +125,8 @@ class DBWriter(DBBase):
 		# First add le repo
 		self.add_user(self.make_user(userid))
 		self.add_repo(repo)
-
-		row = (userid, repo['name'], created_at)
+		repo_id = self.get_repo(repo)[0]
+		row = (userid, repo_id, created_at)
 
 		comm = "INSERT OR IGNORE INTO fork VALUES(?,?,?)"
 		self.conn.execute(comm, row)
@@ -119,8 +135,8 @@ class DBWriter(DBBase):
 		# First add le repo
 		self.add_user(self.make_user(userid))
 		self.add_repo(repo)
-
-		row = (userid, repo['name'], created_at)
+		repo_id = self.get_repo(repo)[0]
+		row = (userid, repo_id, created_at)
 
 		comm = "INSERT OR IGNORE INTO issue VALUES(?,?,?)"
 		self.conn.execute(comm, row)
