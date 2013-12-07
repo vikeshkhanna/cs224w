@@ -12,9 +12,9 @@ Ai, Aj= getAdjMat.getAdjMat(G)
 Av= list()
 normalizer= [0] * 20
 for i in range(0, len(Ai)):
-	normalizer[Ai[i]]= normalizer[Ai[i]] + 1
+	normalizer[Ai[i]-1]= normalizer[Ai[i]-1] + 1
 for i in range(0, len(Ai)):
-	Av[i]= 1/ normalizer[Ai[i]]
+	Av.append(1/ normalizer[Ai[i]-1])
 interface.writeSparseMat(Ai, Aj, Av, 'Ai', 'Aj', 'Av', 'test_adj.mat')
 
 
