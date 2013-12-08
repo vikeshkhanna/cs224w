@@ -16,8 +16,7 @@ def consolidate_features(base_graphs, k):
 	for node in Gcollab.Nodes():
 		nodeID= node.GetId()
 		for neighborID in getKHopN(Gcollab.G, nodeID, k):
-			neighbor= Gcollab.GetNI(neighborID)
-			if(neighborID > nodeID):	# swap
+			if(nodeID > neighborID):	# swap
 				nodeID= neighborID + nodeID
 				neighborID= nodeID - neighborID
 				nodeID= nodeID - neighborID
