@@ -1,6 +1,6 @@
 % takes in the source node id, feature matrix F , and the adjacency matrix A, and the model learnt from the learning stage. Returns the sparse matrix Q.
 
-function Q= getQ(Ai, Aj, Av, F, src, model)
+function [Qi, Qj, Qv]= getQ(Ai, Aj, Av, F, src, model)
 	[n_nodes, n_features]= size(F);
 	A= sparse(double(Ai), double(Aj), double(Av));
 	n_edges= size(Ai);	% not the actual number of edges
@@ -27,5 +27,5 @@ function Q= getQ(Ai, Aj, Av, F, src, model)
 		Qv(e)= Qv(e)/ normalizer(Ai(e));
 	end
 	
-	Q= sparse(double(Ai), double(Aj), double(Qv));
+	%Q= sparse(double(Ai), double(Aj), double(Qv));
 

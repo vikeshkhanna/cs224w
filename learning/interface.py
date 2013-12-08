@@ -21,8 +21,19 @@ def matwrapTrain(features, labels):
 	return (np_train, np_output)
 
 def writeSparseMat(Ai, Aj, Av, l1, l2, l3, fname):
+	np_Ai, np_Aj, np_Av= sparsePyToMat(Ai, Aj, Av)
+	np_dict= {l1:np_Ai, l2:np_Aj, l3:np_Av}	
+	io.savemat(fname, np_dict)
+
+def sparseMatToPy(np_Ai, np_Aj, np_Av):
+	Ai= np_Ai.tolist()
+	Aj= np_Aj.tolist()
+	Av= np_Av.tolist()
+	return Ai, Aj, Av
+
+def sparsePyToMat(Ai, Aj, Av):
 	np_Ai= np.array(Ai)
 	np_Aj= np.array(Aj)
 	np_Av= np.array(Av)
-	np_dict= {l1:np_Ai, l2:np_Aj, l3:np_Av}	
-	io.savemat(fname, np_dict)
+	return np_Ai, np_Aj, np_Av
+	
