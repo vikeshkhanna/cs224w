@@ -66,12 +66,12 @@ def get_all_features(feature_graphs, u, v):
 # Get a dictionary for (s,v):[features] where s is the start node and v are all other nodes - features
 def get_walk_features(Gcollab, feature_graphs, start):
 	features = {}
-	nodelist= []
+
 	for vnode in Gcollab.Nodes():
 		v = vnode.GetId()
 		#if start!=v:
-		nodelist.append(v)
+
 		tup = (start, v)
 		features[tup] = get_all_features(feature_graphs, start, v)
 			
-	return nodelist, features
+	return features

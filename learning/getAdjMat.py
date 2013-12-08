@@ -1,12 +1,17 @@
 def getAdjMat(G):
-	Ai= list();
-	Aj= list();
+	Ai= []
+	Aj= []
+	Av= []
+
 	for e in G.Edges():
-		Ai.append(e.GetSrcNId())
-		Aj.append(e.GetDstNId())
-		Ai.append(e.GetDstNId())
-		Aj.append(e.GetSrcNId())
-	for i in range(0, len(Ai)):
-		Ai[i]= Ai[i]+1
-		Aj[i]= Aj[i]+1
-	return (Ai, Aj)
+		src = e.GetSrcNId()
+		dest = e.GetDstNId()
+
+		Ai.append(src)
+		Aj.append(dest)
+		Av.append(1)
+		Ai.append(dest)
+		Aj.append(src)
+		Av.append(1)
+
+	return (Ai, Aj, Av)
