@@ -2,7 +2,7 @@ from mlabwrap import mlab
 import numpy as np
 def testForSource(Ai, Aj, Av, feature_graphs, src):
 	# Get the features from G for the given source node
-	F= get_walk_features(G, feature_graphs, src)
+	nodeorder, F= get_walk_features(G, feature_graphs, src)
 	newAi= Ai
 	newAj= Aj
 	# convert nodeorder into a dict for mapping

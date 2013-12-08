@@ -5,7 +5,9 @@ from analysis import graphutils
 from learning import consolidateFeatures
 from mlabwrap import mlab
 import numpy as np
-
+from learning import getAdjMat
+from learning import testForSource
+ 
 LEARNING_ROOT="learning/"
 FEATURES="testfeatures"
 LABELS="ytest"
@@ -38,22 +40,23 @@ def main(args):
 	n_iterations= 1
 	# from base graph take a random source node in every iteration
 	baseG= base_graphs[Graphutils.graph.COLLAB]
-	baseNIDs= set()
-	for node in baseG.Nodes():
-		baseNIDs.add(G.GetNId(node))
+	featG= graphutils.split_feat_graphs(base_graphs)
+	deltaNIDs= set()
+	for node in Gcollab_delta.Nodes():
+		deltaNIDs.add(Gcollab_delta.GetNId(node))
+	# get the adjacency matrix
+	Ai, Aj, Av= getAdjMat.getAdjMat(baseG)
 
 	for i in range(0, n_iterations):
 		src= random.sample(baseNIDs, 1)
-		baseNIDs.remove(src)
-				
-	labels = consolidateFeatures.consolidate_labels(features, Gcollab_delta)
-	
-	np_train, np_output = interface.matwrapTrain(features, labels)
-	interface.writeTrain(np_train, np_output, filepath, features_matrix_name, labels_matrix_name)	
-	
-	# Add learning root to mlab path so that all .m functions are available as mlab attributes
-	mlab.path(mlab.path(), LEARNING_ROOT)	
-	mlab.training(np_train, np_output)
+		deltaNIDs.remove(src)
+		topIDs= testForSource(Ai, Aj, Av, featG, src)
+		# compare topIDs with list of labels already formed
+		actual= getYList(Gcollab_delta, src)
+		topIDs= topIDs[1:pred_p]
+		getAccuracy(topIDs, actual)
+			
+
 	
 
 # base graph = till date1
