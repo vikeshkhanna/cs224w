@@ -5,7 +5,7 @@ import numpy as np
 
 # The keys in features in labels represent an edge. Every edge in one dictionary should be present in another one with the appropriate label - 0/1
 def writeTrain(np_train, np_output, outfile, train_name="train", label_name="labels"):
-	np_dict = {train_name:np_train, label_name:np_output}
+	np_dict = {train_name:np_train, label_name: np.transpose(np_output)}
 	io.savemat(outfile, np_dict)
 
 def matwrapTrain(features, labels):
