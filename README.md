@@ -30,7 +30,7 @@ cd numpy
 python setup.py install --user
 
 2. Install SciPy
-wget http://sourceforge.net/projects/scipy/files/scipy/0.13.1/scipy-0.13.1.tar.gz/download
+wget "http://downloads.sourceforge.net/project/scipy/scipy/0.13.1/scipy-0.13.1.tar.gz?r=&ts=1386460361&use_mirror=iweb"_
 cd download
 python setup.py install --user
 

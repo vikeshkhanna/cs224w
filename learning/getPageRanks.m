@@ -1,4 +1,5 @@
-function pr= getPageRanks(Q, epsilon)
+function pr= getPageRanks(Qi, Qj, Qv, epsilon)
+	Q= sparse(double(Qi), double(Qj), double(Qv))
 	Q_t= Q';
 	[n_nodes, ~]= size(Q);
 	size(Q)

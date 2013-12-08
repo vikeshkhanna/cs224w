@@ -15,17 +15,18 @@ def consolidate_features(base_graphs, k):
 
 	for node in Gcollab.Nodes():
 		nodeID= node.GetId()
+
 		for neighborID in getKHopN(Gcollab.G, nodeID, k):
-			neighbor= Gcollab.GetNI(neighborID)
-			if(neighborID > nodeID):	# swap
+			if(nodeID > neighborID):	# swap
 				nodeID= neighborID + nodeID
 				neighborID= nodeID - neighborID
 				nodeID= nodeID - neighborID
+
 			if (nodeID, neighborID) in features:
 				continue
 			features[(nodeID, neighborID)]= []
 				
-	for graph_type, graph in feature_graphs.iteritems():
+	for graph in feature_graphs:
 		features = getFeatures(Gcollab, graph, features)
 
 	return features
