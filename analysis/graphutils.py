@@ -52,8 +52,9 @@ def get_db_graphs(db, uid, min_date=None, max_date=None):
 	follow = reader.followers(min_date, max_date)
 	Gfollow = get_db_graph(Graph.FOLLOW, uid, follow)
 
-	pull = reader.pull(min_date, max_date)
-	Gpull = get_db_graph(Graph.PULL, uid, pull)
+	# Pull is now a part of collab graph   
+	# pull = reader.pull(min_date, max_date)
+	# Gpull = get_db_graph(Graph.PULL, uid, pull)
 
 	watch = reader.watch(min_date, max_date)
 	Gwatch = get_db_graph(Graph.WATCH, uid, watch)
@@ -62,13 +63,26 @@ def get_db_graphs(db, uid, min_date=None, max_date=None):
 	Gfork = get_db_graph(Graph.FORK, uid, fork)
 
 	reader.close()
-	return {Graph.COLLAB: Gcollab, Graph.FOLLOW:Gfollow, Graph.PULL: Gpull, Graph.WATCH: Gwatch, Graph.FORK: Gfork}
+	return {Graph.COLLAB: Gcollab, Graph.FOLLOW:Gfollow, Graph.WATCH: Gwatch, Graph.FORK: Gfork}
 
 def split_feat_graphs(base_graphs):
-	feature_graphs = {}
+	feature_graphs = []
 
-	for graph_type, graph in base_graphs.iteritems():
+	# THIS ORDER MUST BE MAINTAINED, otherwise feature vectors will keep changing order
+	# Gfollow, Gfork, Gwatch
+	for graph_type in sorted(base_graphs.keys()):
+		graph = base_graphs[graph_type]
+
 		if graph_type!=Graph.COLLAB:
-			feature_graphs[graph_type] = graph
+			feature_graphs.append(graph)
 
 	return feature_graphs
+
+def get_reverse_graph_map(base_graphs):
+	rmap = {}
+
+	for graph_type in sorted(base_graphs.keys()):
+		graph = base_graphs[graph_type]
+		rmap[graph] = graph_type
+
+	return rmap
