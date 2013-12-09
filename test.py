@@ -39,7 +39,7 @@ def main(args):
 	
 	n_iterations= 1
 	# from base graph take a random source node in every iteration
-	baseG= base_graphs[Graphutils.graph.COLLAB]
+	baseG= base_graphs[graphutils.graph.COLLAB]
 	featG= graphutils.split_feat_graphs(base_graphs)
 	deltaNIDs= set()
 	for node in Gcollab_delta.Nodes():
