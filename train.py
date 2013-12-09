@@ -15,9 +15,9 @@ def main(args):
 	db = args[0]
 	date1 = args[1]
 	date2 = args[2]
-	k = int(args[3])
-	basename = args[4]
-	date3 = args[5]
+	date3 = args[3]
+	k = int(args[4])
+	basename = args[5]
 
 	reader = DBReader(db)
 	print("Getting uid")
@@ -31,6 +31,7 @@ def main(args):
 	Gcollab_base = graphutils.get_collab_graph(db, uid, date3, date1)
 
 	base_graphs = graphutils.get_base_dict(Gcollab_base, feature_graphs)
+	graphutils.print_stats(base_graphs)
 
 	filepath = os.path.join(LEARNING_ROOT, basename + ".mat")
 	features_matrix_name = "%s_%s"%(basename, FEATURES)
@@ -47,7 +48,7 @@ def main(args):
 	mlab.path(mlab.path(), LEARNING_ROOT)	
 	mlab.training(np_train, np_output)
 
-# base graph = till date1
+# NOTE base graph = till date3 to date1
 # delta graph = date1 to date2
 # This file calls consolidate_features for the base graph, consolidate_labels for the delta graph and writes the .mat file
 # based on the basename. It also needs the k (number of hops) parameter

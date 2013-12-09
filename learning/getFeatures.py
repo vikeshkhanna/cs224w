@@ -42,7 +42,7 @@ def get_features(featG, u, v):
 	# If either node does not exist in the feature graph
 	# Not the first -1 is because GetWeight returns -1 for no edge
 	if not featG.IsNode(u) or not featG.IsNode(v):
-		return [featG.GetWeight(u,v),0,0,-1]
+		return [featG.GetWeight(u,v),0,0,0]
 
 	uFNode = featG.GetNI(u)
 	vFNode = featG.GetNI(v)
@@ -78,7 +78,6 @@ def get_walk_features(Gcollab, feature_graphs, start):
 
 		tup = (start, v)
 		features[tup] = get_all_features(feature_graphs, start, v)
-			
+		
+	#print(features)	
 	return features
-
-

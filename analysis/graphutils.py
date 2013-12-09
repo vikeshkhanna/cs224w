@@ -93,6 +93,7 @@ def get_base_dict(Gcollab, feature_graphs):
 def get_collab_graph(db, uid, min_date=None, max_date=None):
 	reader = DBReader(db)
 
+
 	collab = reader.collaborators(min_date, max_date)
 	Gcollab = get_db_graph(Graph.COLLAB, uid, collab)
 	
@@ -120,3 +121,10 @@ def get_reverse_graph_map(base_graphs):
 		rmap[graph] = graph_type
 
 	return rmap
+
+def print_stats(base_graphs):
+	for key, val in base_graphs.iteritems():
+		print("Graph type: %s"%key)
+		print("Graph Nodes: %d. Edges= %d"%(val.GetNodes(), val.GetEdges()))
+
+

@@ -24,7 +24,7 @@ def testForSource(Ai, Aj, Av, Gcollab_base, feature_graphs, src, beta):
 		mapping[v] = cnt
 		rmap[cnt] = v
 
-		flat_features.append(feature)
+		flat_features.append(map(float, feature))
 		cnt+=1
 	
 	for i in range(len(Ai)):
@@ -38,7 +38,7 @@ def testForSource(Ai, Aj, Av, Gcollab_base, feature_graphs, src, beta):
 	np_F = np.array(flat_features)
 	mlab.path(mlab.path(), "learning/")
 
-	#print np_Ai, np_Aj, np_Av, np_F, newSrcID, beta, basename
+	#print np_Ai, np_Aj, np_Av, np_F, newSrcID, beta
 
 	np_newIDs= mlab.runRW(np_Ai, np_Aj, np_Av, np_F, newSrcID, beta)
 	newIDs= np_newIDs.tolist()
