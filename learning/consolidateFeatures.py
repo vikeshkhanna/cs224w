@@ -7,7 +7,7 @@ from analysis import graphutils
 # read followgraph
 # first construct features dict consisting of every pair which is k hops away
 
-def consolidate_features(base_graphs, k):
+def consolidate_features(base_graphs, Gcollab_delta, k):
 	features = {}
 
 	Gcollab = base_graphs[graphutils.Graph.COLLAB]
@@ -27,13 +27,13 @@ def consolidate_features(base_graphs, k):
 			features[(nodeID, neighborID)]= []
 				
 	for graph in feature_graphs:
-		features = getFeatures(Gcollab, graph, features)
+		features = getFeatures(Gcollab, Gcollab_delta, graph, features)
 
 	return features
 
 def consolidate_features_add(base_graphs, k, Gcollab_delta):
 	# Get all the k-hop features
-	features = consolidate_features(base_graphs, k)
+	features = consolidate_features(base_graphs, Gcollab_delta, k)
 	Gcollab_base = base_graphs[graphutils.Graph.COLLAB]
 	feature_graphs = graphutils.split_feat_graphs(base_graphs)
 	org = len(features)

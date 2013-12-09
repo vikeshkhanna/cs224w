@@ -3,7 +3,7 @@ import numpy as np
 from learning import getFeatures
 from learning import interface
 
-def testForSource(Ai, Aj, Av, Gcollab_base, feature_graphs, src, beta, basename):
+def testForSource(Ai, Aj, Av, Gcollab_base, feature_graphs, src, beta):
 	# Get the features from G for the given source node
 	features = getFeatures.get_walk_features(Gcollab_base, feature_graphs, src)
 	newAi= Ai

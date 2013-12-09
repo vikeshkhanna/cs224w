@@ -3,7 +3,7 @@ import snappy.snap as snap
 from getCoefficients import *
 
 # Gets the features for the given pair of nodes. Also deletes the nodes that are not present in feature graph
-def getFeatures(baseG, featG, pairs):
+def getFeatures(baseG, Gcollab_delta, featG, pairs):
 	delset= set()
 
 	# from every start node, get all the nodes which are upto k hops away.
@@ -11,8 +11,12 @@ def getFeatures(baseG, featG, pairs):
 		uNode= baseG.GetNI(u)
 		vNode= baseG.GetNI(v)
 
-		# see if both of these nodes are in feat graph
-		if not (featG.IsNode(u) and featG.IsNode(v)):
+		d1 = featG.created_at(u,v).replace(tzinfo=None)
+		d2 = Gcollab_delta.created_at(u,v).replace(tzinfo=None)
+
+		# see if both of these nodes are in feat graph 
+		# Note - Feature Graphs may overlap delta graph. In this case, ensure that the edge was first formed in featG
+		if not (featG.IsNode(u) and featG.IsNode(v)) or d1 > d2:
 			# delete this pair from the pair dict
 			delset.add((u, v))
 			continue
@@ -38,7 +42,7 @@ def get_features(featG, u, v):
 	# If either node does not exist in the feature graph
 	# Not the first -1 is because GetWeight returns -1 for no edge
 	if not featG.IsNode(u) or not featG.IsNode(v):
-		return [featG.GetWeight(u,v),0,0,0]
+		return [featG.GetWeight(u,v),0,0,-1]
 
 	uFNode = featG.GetNI(u)
 	vFNode = featG.GetNI(v)
@@ -47,6 +51,7 @@ def get_features(featG, u, v):
 	features.append(featG.GetWeight(u,v))  # featG must be undirected, GetWeight=-1 for no edge.
 	features.append(len(getCommonNeighbor(uFNode, vFNode)))
 	features.append(getJaccard(uFNode, vFNode))
+	#features.append(snap.GetShortPath(featG.G, u, v))
 	features.append(getAdamicAdar(featG, uFNode, vFNode))
 
 	return features
@@ -75,3 +80,5 @@ def get_walk_features(Gcollab, feature_graphs, start):
 		features[tup] = get_all_features(feature_graphs, start, v)
 			
 	return features
+
+

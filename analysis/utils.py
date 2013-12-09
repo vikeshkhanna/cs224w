@@ -1,7 +1,6 @@
-import snap
+import snappy.snap as snap
 import os
 import math
-import snap
 import sys
 
 def mle(hist):
@@ -17,6 +16,7 @@ def get_graph(path):
 
 def get_degree_histogram(G):
 	vec = snap.TIntPrV()
+	print(G)
 	snap.GetDegCnt(G, vec)
 	hist = []
 

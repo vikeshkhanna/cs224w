@@ -1,9 +1,10 @@
 import snap
+import dateutil.parser 
 from datetime import *
 
 class EdgeInfo:
-	def __init__(self, created_at=None, weight=None):
-		self.created_at = created_at
+	def __init__(self, created_at, weight):
+		self.created_at = dateutil.parser.parse(created_at).replace(tzinfo=None)
 		self.weight = weight
 
 class EUNGraph():
@@ -14,15 +15,10 @@ class EUNGraph():
 	def AddNode(self, u):
 		return self.G.AddNode(u)
 
-	def AddEdge(self, u, v, created_at=None, weight=None):
+	def AddEdge(self, u, v, created_at, weight):
 		info = EdgeInfo(created_at, weight)
 		tup = (u,v)
-	
-		if tup not in self.edge_info:
-			self.edge_info[tup] = []
-		
-		self.edge_info[tup].append(info)
-
+		self.edge_info[tup] = info
 		return self.G.AddEdge(u,v)
 
 	def GetNI(self, u):
@@ -55,9 +51,17 @@ class EUNGraph():
 		tup = (u,v)
 
 		if tup in self.edge_info:
-			return sum([info.weight for info in self.edge_info[tup] if info.weight!=None])
+			return self.edge_info[tup].weight
 
 		return -1
 
 	def GetRndNId(self):
 		return self.G.GetRndNId()
+
+	def created_at(self, u, v):
+		tup = (u,v)
+
+		if tup in self.edge_info:
+			return self.edge_info[tup].created_at
+		
+		return datetime.max

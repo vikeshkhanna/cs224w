@@ -2,14 +2,30 @@ import analysis.snap
 import sys
 import os
 from analysis.utils import *
+from analysis import graphutils
 from db.interface import *
 
 def main(args):
 	if len(args)<1:
-		print("Usage: ./program edge_list")
+		print("Usage: ./program <db> <date1> <date2>")
 		sys.exit(1)
+
+	db = args[0]
+	date1 = args[1]
+	date2 = args[2]
 	
-	G = get_graph(args[0])
+	reader = DBReader(db)
+	uid = reader.uid()
+	print("#uid cache. Length=%d"%len(uid))
+
+	collab_base = reader.collaborators(None, date1)
+	print("#collab_base. Length=%d"%len(collab_base))
+
+	Gcollab_base = graphutils.get_db_graph(graphutils.Graph.COLLAB, uid, collab_base)
+	print("#Gcollab_base. Number of nodes=%d"%Gcollab_base.GetNodes())
+
+	G = Gcollab_base.G
+
 	hist = get_degree_histogram(G)
 	n = G.GetNodes()
 

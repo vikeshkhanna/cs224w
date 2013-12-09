@@ -26,5 +26,5 @@ function model = training(features, ytrain)
     end
  
     model = mnrfit(fx, ytrain);
-    save 'model.mat' model; 
+    %save 'model.mat' model; 
 end
