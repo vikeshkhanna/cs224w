@@ -2,7 +2,7 @@ function [fp_ep, fp_en, fn_ep, fn_en]= errorTrain(f, pihat, labels)
 %ERROR Summary of this function goes here
 %   Detailed explanation goes here
     %samples = size(labels, 1);
-    [sortedpi, indices]= sort(pihat(:, 1), 'descend');
+    [sortedpi, indices]= sort(pihat(:, 2), 'descend');
     disp(sortedpi)
     sortedlabels= zeros(numel(indices), 1);
     for i= 1:numel(indices)
@@ -11,10 +11,10 @@ function [fp_ep, fp_en, fn_ep, fn_en]= errorTrain(f, pihat, labels)
     %disp(sortedlabels)
     l= numel(sortedlabels);
     %fprintf('l is %d', l)
-    s1= sum(sortedlabels(1:int64(l/4)));
-    s2= sum(sortedlabels(int64(l/4): int64(l/2)));
-    s3= sum(sortedlabels(int64(l/2): int64(3*l/4)));
-    s4= sum(sortedlabels(int64(3*l/4): end));
+    s1= sum(sortedlabels(1:int64(l/4)))
+    s2= sum(sortedlabels(int64(l/4): int64(l/2)))
+    s3= sum(sortedlabels(int64(l/2): int64(3*l/4)))
+    s4= sum(sortedlabels(int64(3*l/4): end))
     
     disp(s1)
     disp(s2)
