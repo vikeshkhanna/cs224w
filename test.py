@@ -25,7 +25,7 @@ def main(args):
 	k = int(args[3])
 
 	if len(args)>=5:
-		beta = args[4]
+		beta = float(args[4])
 		bstart = beta
 		bfinish = beta
 	else:
