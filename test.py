@@ -21,6 +21,10 @@ def print_and_log(s, f):
 	f.write(s)
 	print(s)
 	
+def frange(x,y,step):
+	while x<y:
+		yield x
+		x += step
 
 def main(args):
 	db = args[0]
@@ -55,11 +59,11 @@ def main(args):
 	ktop = 20
 	f = open(OUTFILE,"w")
 
-	for beta in range(0, 4, 0.1):
+	for beta in frange(0, 4, 0.1):
 		total_recall = 0
 		total_avg_rank= 0
 		total_preck = 0
-		n_iterations = 25
+		n_iterations = 10
 
 		for i in range(0, n_iterations):
 			src = random.choice(common_nodes)
@@ -68,11 +72,16 @@ def main(args):
 
 			# compare topIDs with list of labels already formed	
 			actual = evaluate.getYList(baseG, Gcollab_delta, src)
-			recall, preck, average_rank = evaluate.getAccuracy(topIDs, actual, ktop)	
+	
+			# ignore if the node did not form an edge in the delta	
+			if len(actual)>0:
+				recall, preck, average_rank = evaluate.getAccuracy(topIDs, actual, ktop)	
 
-			total_recall+=recall
-			total_avg_rank += average_rank
-			total_preck += len(preck)
+				total_recall+=recall
+				total_avg_rank += average_rank
+				total_preck += len(preck)
+			else:
+				print("Warning. Ignoring node with 0 new edges")
 			
 		num = float(n_iterations)
 		print_and_log("# Beta\tRecall\tAvg. Rank\tPrec 20\n", f)		
