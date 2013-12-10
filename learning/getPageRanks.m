@@ -1,4 +1,4 @@
-function pr = getPageRanks(Q, epsilon)
+function pr = getPageRanks(Q)
 	save 'getPageRanks.debug.mat'
 	
 	Q_t= Q';
@@ -7,7 +7,7 @@ function pr = getPageRanks(Q, epsilon)
 	old_pr= zeros(n_nodes, 1);
 	max_iterations = 100;
 	iter = 0;
-
+	epsilon= 0.1;
 	while(norm(pr- old_pr) > norm(pr) * epsilon && iter <= max_iterations)
 		error = norm(pr-old_pr);
 		tolerance = norm(pr)*epsilon;
@@ -17,4 +17,7 @@ function pr = getPageRanks(Q, epsilon)
 		pr = Q_t * pr;
 		iter = iter + 1;
 	end
+	%fprintf('pageranks:\n')
+	%disp(pr)
+end
 	

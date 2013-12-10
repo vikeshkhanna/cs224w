@@ -1,6 +1,7 @@
 import snappy.snap as snap
 
 def getKHopN(G, node, k):
+	print '*****************DEPRICATED: GetKHopN***********'
 	s = set()
 	for i in range(2, k+1):
 		v= snap.TIntV()

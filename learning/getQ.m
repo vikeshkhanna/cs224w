@@ -5,8 +5,8 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	A= sparse(double(Ai), double(Aj), double(Av));
 	Qi = Ai;
 	Qj = Aj;
-
-	n_edges= size(Ai);	% not the actual number of edges
+	
+	n_edges= size(Ai, 1);	% not the actual number of edges
 	% for every other node find f(w, phi(u, v))
 	func= zeros(n_nodes, 1);
 	for i= 1:n_nodes
@@ -21,11 +21,10 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	end
 	
 	% now normalize Q- get sum over all neighbors j for a given i- so find normalizer(i)
-	normalizer= zeros(n_nodes);
+	normalizer= zeros(n_nodes, 1);
 	for e = 1:n_edges
 		normalizer(Ai(e))= normalizer(Ai(e)) + Qv(e);
 	end
-	
 	% now normalize all the Qv values
 	for e= 1:n_edges
 		Qv(e)= Qv(e)/ normalizer(Ai(e));
