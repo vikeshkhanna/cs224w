@@ -1,6 +1,5 @@
 import snappy.snap as snap
 from getFeatures import *
-from getKHopN import *
 from analysis import graphutils
 
 # get feature graphs
@@ -16,7 +15,7 @@ def consolidate_features(base_graphs, Gcollab_delta, k):
 	for node in Gcollab.Nodes():
 		nodeID= node.GetId()
 
-		for neighborID in getKHopN(Gcollab.G, nodeID, k):
+		for neighborID in graphutils.getKHopN(Gcollab, nodeID, k):
 			if(nodeID > neighborID):	# swap
 				nodeID= neighborID + nodeID
 				neighborID= nodeID - neighborID

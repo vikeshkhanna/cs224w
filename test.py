@@ -56,17 +56,20 @@ def main(args):
 	common_nodes = list(set(deltaNIDs).intersection(baseNIDs))
 	
 	ktop = 20
+	subGraphK= 10 
 	f = open(OUTFILE,"w")
 
 	print_and_log("# Beta\tRecall\tAvg. Rank\tPrec 20\n", f)		
-
 	n_iterations = 10
 	it = 0
 	sources = []
 
 	while it < n_iterations:
 		src  = random.choice(common_nodes)
-		actual = evaluate.getYList(baseG, Gcollab_delta, src)
+		subBaseG= graphutils.getSubGraph(baseG, src, subGraphK)
+		#print 'subgraph: ', subBaseG.GetNodes(), subBaseG.GetEdges()
+		actual = evaluate.getYList(subBaseG, Gcollab_delta, src)
+		#actual = evaluate.getYList(baseG, Gcollab_delta, src)
 	
 		# Consider source node if it forms at least one edge in delta graph
 		if len(actual)>0:
@@ -75,6 +78,7 @@ def main(args):
 			it += 1
 		else:
 			print("Warning. Ignoring node with 0 new edges")
+	print 'number of nodes and edges in graph:', baseG.GetNodes(), baseG.GetEdges()
 
 	for beta in frange(bstart, bfinish, 0.25):
 		total_recall = 0
@@ -82,10 +86,15 @@ def main(args):
 		total_preck = 0
 
 		for src in sources:
-			topIDs = runrw.runrw(baseG, featG, Gcollab_delta, src, beta)	
+			subBaseG= graphutils.getSubGraph(baseG, src, subGraphK)
+			print 'sub graph nodes:', subBaseG.GetNodes()
+			print 'sub graph edges:', subBaseG.GetEdges()
+			topIDs = runrw.runrw(subBaseG, featG, Gcollab_delta, src, beta)	
+			#topIDs = runrw.runrw(baseG, featG, Gcollab_delta, src, beta)	
 
 			# compare topIDs with list of labels already formed	
-			actual = evaluate.getYList(baseG, Gcollab_delta, src)
+			actual = evaluate.getYList(subBaseG, Gcollab_delta, src)
+			#actual = evaluate.getYList(baseG, Gcollab_delta, src)
 	
 			# ignore if the node did not form an edge in the delta	
 			recall, preck, average_rank = evaluate.getAccuracy(topIDs, actual, ktop)	

@@ -30,6 +30,36 @@ def construct(edgelist):
 
 	return G
 
+
+def getKHopN(G, node, k):
+	s = set()
+	for i in range(2, k+1):
+		v= snap.TIntV()
+		snap.GetNodesAtHop(G.G, node, i, v, False)
+		# add node IDs in v to s
+		for item in v:
+			s.add(item)
+	return s
+
+		
+	
+def getSubGraph(G, source, k):
+	nodes= getKHopN(G, source, k)
+	# to nodes add all the neighbors of source
+	nodes.add(source)
+	sourceNode= G.GetNI(source)
+	for neighborID in sourceNode.GetOutEdges():
+		nodes.add(neighborID)
+	
+	# insert nodes into TIntV
+	nodesV= snap.TIntV()	
+	
+	for node in nodes:
+		nodesV.Add(node)
+	subG= snap.GetSubGraph(G.G, nodesV)
+	return subG
+
+	
 def get_db_graph(graph_type, uid, dbresponse):
 	edgelist = []
 

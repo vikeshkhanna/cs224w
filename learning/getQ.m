@@ -24,11 +24,10 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	end
 	
 	% now normalize Q- get sum over all neighbors j for a given i- so find normalizer(i)
-	normalizer= zeros(n_nodes);
+	normalizer= zeros(n_nodes, 1);
 	for e = 1:n_edges
 		normalizer(Ai(e))= normalizer(Ai(e)) + Qv(e);
 	end
-	
 	% now normalize all the Qv values
 	for e= 1:n_edges
 		Qv(e)= Qv(e)/ normalizer(Ai(e));
