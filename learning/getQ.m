@@ -2,13 +2,6 @@
  
 function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	[n_nodes, n_features]= size(F);
-<<<<<<< HEAD
-	A= sparse(double(Ai), double(Aj), double(Av));
-	Qi = Ai;
-	Qj = Aj;
-	
-	n_edges= size(Ai, 1);	% not the actual number of edges
-=======
 	A = sparse(double(Ai), double(Aj), double(Av));
 
 	n_edges= size(Ai);	% not the actual number of edges
@@ -16,7 +9,6 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	disp(size(F));
 	disp(n_nodes);
 
->>>>>>> 2c8df402e5a225492e01a52facc117e8870016a3
 	% for every other node find f(w, phi(u, v))
 	func= zeros(n_nodes, 1);
 	for i= 1:n_nodes

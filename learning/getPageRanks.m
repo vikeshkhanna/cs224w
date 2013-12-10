@@ -7,12 +7,8 @@ function pr = getPageRanks(Q)
 	old_pr= zeros(n_nodes, 1);
 	max_iterations = 100;
 	iter = 0;
-<<<<<<< HEAD
-	epsilon= 0.1;
-=======
 	epsilon = 0.1;
 
->>>>>>> 2c8df402e5a225492e01a52facc117e8870016a3
 	while(norm(pr- old_pr) > norm(pr) * epsilon && iter <= max_iterations)
 		error = norm(pr-old_pr);
 		tolerance = norm(pr)*epsilon;
@@ -22,11 +18,4 @@ function pr = getPageRanks(Q)
 		pr = Q_t * pr;
 		iter = iter + 1;
 	end
-<<<<<<< HEAD
-	%fprintf('pageranks:\n')
-	%disp(pr)
 end
-	
-=======
-end
->>>>>>> 2c8df402e5a225492e01a52facc117e8870016a3
