@@ -19,6 +19,7 @@ class EUNGraph():
 		info = EdgeInfo(created_at, weight)
 		tup = (u,v)
 		self.edge_info[tup] = info
+		self.edge_info[(v,u)] = info
 		return self.G.AddEdge(u,v)
 
 	def GetNI(self, u):

@@ -2,16 +2,27 @@
  
 function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	[n_nodes, n_features]= size(F);
+<<<<<<< HEAD
 	A= sparse(double(Ai), double(Aj), double(Av));
 	Qi = Ai;
 	Qj = Aj;
 	
 	n_edges= size(Ai, 1);	% not the actual number of edges
+=======
+	A = sparse(double(Ai), double(Aj), double(Av));
+
+	n_edges= size(Ai);	% not the actual number of edges
+
+	disp(size(F));
+	disp(n_nodes);
+
+>>>>>>> 2c8df402e5a225492e01a52facc117e8870016a3
 	% for every other node find f(w, phi(u, v))
 	func= zeros(n_nodes, 1);
 	for i= 1:n_nodes
-		func(i)= calcFunc(squeeze(F(i, :)), model, beta);
+		func(i)= calcFunc(F(i, :), model, beta);
 	end
+	
 	% now given the f(w, phi(s, v)) for every node v, calculate unnormalized values for Q based on A: for every edge (i, j) in A, assign it the weight func(j) 
 	Qv= zeros(n_edges, 1);
 
@@ -36,3 +47,4 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	ALPHA = 0.3;
 	Q = (1-ALPHA)*Q;
 	Q(:, src) = Q(:,src) + ALPHA;
+end

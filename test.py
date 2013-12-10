@@ -22,10 +22,11 @@ def main(args):
 	db = args[0]
 	date1 = args[1]
 	date2 = args[2]
-	k = int(args[3])
+	date3 = args[3]
+	k = int(args[4])
 
-	if len(args)>=5:
-		beta = float(args[4])
+	if len(args)>=6:
+		beta = float(args[5])
 		bstart = beta
 		bfinish = beta
 	else:
@@ -37,7 +38,9 @@ def main(args):
 	uid = reader.uid()
 
 	print("Getting all the base graphs")
-	base_graphs = graphutils.get_db_graphs(db, uid, None, date1)
+	feature_graphs = graphutils.get_feat_graphs(db, uid, None, date1)
+	Gcollab_base = graphutils.get_collab_graph(db, uid, date3, date1)
+	base_graphs = graphutils.get_base_dict(Gcollab_base, feature_graphs)
 
 	print("Getting Gcollab_delta graph")
 	Gcollab_delta = graphutils.get_collab_graph(db, uid, date1, date2)
@@ -111,8 +114,9 @@ def main(args):
 # This file calls consolidate_features for the base graph, consolidate_labels for the delta graph and writes the .mat file
 # based on the basename. It also needs the k (number of hops) parameter
 if __name__=="__main__":
-	if len(sys.argv)<5:
-		print("Usage: program.py <db> <date1> <date2> <k hops> [beta: optional - iterates if not given]")
+	if len(sys.argv)<6:
+		print("Usage: program.py <db> <date1> <date2> <date3> <k hops> [beta: optional - iterates if not given]")
+		print("# Base Graph - date3 to date1. Delta graph - date1 to date2. Feature graph - beginning of time to date1")
 		sys.exit(1)
 	
 	main(sys.argv[1:])

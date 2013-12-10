@@ -10,5 +10,3 @@ def runrw(baseG, featG, Gcollab_delta, src, beta):
 	topIDs= testForSource.testForSource(Ai, Aj, Av, baseG, featG, src, beta)
 	return topIDs	
 
-	
-
