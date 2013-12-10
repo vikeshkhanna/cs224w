@@ -68,12 +68,16 @@ def get_db_graphs(db, uid, min_date=None, max_date=None):
 def get_feat_graphs(db, uid, min_date=None, max_date=None):
 	reader = DBReader(db)
 
+	print("Getting Gfollow")
 	follow = reader.followers(min_date, max_date)
 	Gfollow = get_db_graph(Graph.FOLLOW, uid, follow)
 
+	print("Getting Gwatch")
 	watch = reader.watch(min_date, max_date)
 	Gwatch = get_db_graph(Graph.WATCH, uid, watch)
 
+
+	print("Getting Gfork")
 	fork = reader.watch(min_date, max_date)
 	Gfork = get_db_graph(Graph.FORK, uid, fork)
 
@@ -93,7 +97,7 @@ def get_base_dict(Gcollab, feature_graphs):
 def get_collab_graph(db, uid, min_date=None, max_date=None):
 	reader = DBReader(db)
 
-
+	print("Getting Collab graph")
 	collab = reader.collaborators(min_date, max_date)
 	Gcollab = get_db_graph(Graph.COLLAB, uid, collab)
 	
