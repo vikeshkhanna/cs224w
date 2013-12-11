@@ -235,20 +235,17 @@ class DBReader(DBBase):
 		return rows
 
 	def get_user(self, rowid):
-		print("Starting user query for %s"%rowid)
 		comm = "SELECT userid FROM user where rowid=?"
 		ids = (rowid, )
 		user = self.conn.execute(comm, ids).fetchone()
-		print("User query complete")
 		return user[0]
 
 	def get_users(self, rowids):
-		print("Starting users query")
 		cache = {}
 
 		for rowid in rowids:
 			cache[rowid] = self.get_user(rowid)
-		
+	
 		return cache
 		
 	# returns the cursor

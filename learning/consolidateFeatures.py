@@ -16,13 +16,14 @@ def consolidate_features(base_graphs, Gcollab_delta, k):
 		nodeID= node.GetId()
 
 		for neighborID in graphutils.getKHopN(Gcollab, nodeID, k):
-			if(nodeID > neighborID):	# swap
+			if nodeID > neighborID:	# swap
 				nodeID= neighborID + nodeID
 				neighborID= nodeID - neighborID
 				nodeID= nodeID - neighborID
 
 			if (nodeID, neighborID) in features:
 				continue
+
 			features[(nodeID, neighborID)]= []
 				
 	for graph in feature_graphs:
@@ -62,7 +63,7 @@ def consolidate_labels(features, Gcollab_delta):
 		u = edge[0]
 		v = edge[1]
 
-		if(Gcollab_delta.IsEdge(u,v)):
+		if Gcollab_delta.IsEdge(u,v):
 			labels[edge] = 1
 		else:
 			labels[edge] = 0

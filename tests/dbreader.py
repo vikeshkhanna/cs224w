@@ -1,28 +1,18 @@
 import path
 from db.interface import * 
-from analysis.graphutils import *
+from analysis import graphutils
+import utils
 
-reader = DBReader('../db/github.2012_4_12.2012_8_14.db')
-#reader = DBReader('../db/github.2012_4_12.2012_8_14.db')
+db = utils.get_small_db()
+reader = DBReader(db)
 
-collab = reader.collaborators()
 uid = reader.uid()
+rowid = uid.values()[0]
+print reader.get_users([rowid, rowid])
 
-G = get_db_graph(Graph.COLLAB, uid, collab)
-print G.GetNodes()
+Gcollab = graphutils.get_collab_graph(db, uid)
+feature_graphs = graphutils.get_feat_graphs(db, uid)
 
-u = G.G.GetRndNId()
-v = G.G.GetRndNId()
-print(G.GetWeight(u,v))
+base_graphs = graphutils.get_base_dict(Gcollab, feature_graphs)
+graphutils.print_stats(base_graphs)
 
-follow = reader.followers()
-G2 = get_db_graph(Graph.COLLAB, uid, follow)
-print G2.GetNodes()
-
-pull = reader.pull()
-G3 = get_db_graph(Graph.COLLAB, uid, pull)
-print G3.GetNodes()
-
-watch = reader.watch()
-G4 = get_db_graph(Graph.COLLAB, uid, watch)
-print G4.GetNodes()

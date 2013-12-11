@@ -6,6 +6,7 @@ class EdgeInfo:
 	def __init__(self, created_at, weight):
 		self.created_at = dateutil.parser.parse(created_at).replace(tzinfo=None)
 		self.weight = weight
+		pass
 
 class EUNGraph():
 	def __init__(self):
@@ -14,6 +15,7 @@ class EUNGraph():
 
 	def AddNode(self, u):
 		return self.G.AddNode(u)
+		#return 1
 
 	def AddEdge(self, u, v, created_at, weight):
 		info = EdgeInfo(created_at, weight)
@@ -24,7 +26,6 @@ class EUNGraph():
 
 	def GetNI(self, u):
 		return self.G.GetNI(u)
-
 
 	def IsNode(self, u):
 		return self.G.IsNode(u)

@@ -16,7 +16,6 @@ import random
 LEARNING_ROOT="learning/"
 FEATURES="testfeatures"
 LABELS="ytest"
-OUTFILE="test.out"
 
 def main(args):
 	db = args[0]
@@ -24,14 +23,15 @@ def main(args):
 	date2 = args[2]
 	date3 = args[3]
 	k = int(args[4])
+	OUTFILE=args[5]
 
-	if len(args)>=6:
-		beta = float(args[5])
+	if len(args)>=7:
+		beta = float(args[6])
 		bstart = beta
 		bfinish = beta
 	else:
 		bstart = 0
-		bfinish = 4
+		bfinish = 20
 
 	reader = DBReader(db)
 	print("Getting uid")
@@ -44,8 +44,6 @@ def main(args):
 
 	print("Getting Gcollab_delta graph")
 	Gcollab_delta = graphutils.get_collab_graph(db, uid, date1, date2)
-
-	n_iterations = 25
 
 	# from base graph take a random source node in every iteration
 	baseG = base_graphs[graphutils.Graph.COLLAB]
@@ -80,7 +78,7 @@ def main(args):
 			print("Warning. Ignoring node with 0 new edges")
 	print 'number of nodes and edges in graph:', baseG.GetNodes(), baseG.GetEdges()
 
-	for beta in frange(bstart, bfinish, 0.25):
+	for beta in frange(bstart, bfinish, 4):
 		total_recall = 0
 		total_avg_rank= 0
 		total_preck = 0
@@ -89,7 +87,7 @@ def main(args):
 			subBaseG= graphutils.getSubGraph(baseG, src, subGraphK)
 			print 'sub graph nodes:', subBaseG.GetNodes()
 			print 'sub graph edges:', subBaseG.GetEdges()
-			topIDs = runrw.runrw(subBaseG, featG, Gcollab_delta, src, beta)	
+			topIDs = runrw.runrw(subBaseG, featG, src, beta)	
 			#topIDs = runrw.runrw(baseG, featG, Gcollab_delta, src, beta)	
 
 			# compare topIDs with list of labels already formed	
@@ -115,7 +113,7 @@ def main(args):
 # based on the basename. It also needs the k (number of hops) parameter
 if __name__=="__main__":
 	if len(sys.argv)<6:
-		print("Usage: program.py <db> <date1> <date2> <date3> <k hops> [beta: optional - iterates if not given]")
+		print("Usage: program.py <db> <date1> <date2> <date3> <k hops> <outfile> [beta: optional - iterates if not given]")
 		print("# Base Graph - date3 to date1. Delta graph - date1 to date2. Feature graph - beginning of time to date1")
 		sys.exit(1)
 	

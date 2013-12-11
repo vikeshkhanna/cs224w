@@ -11,8 +11,7 @@ def get_small_collab(min_date=None, max_date=None):
 	db = get_small_db()
 	reader = DBReader(db)
 	uid = reader.uid()
-	collab = reader.collaborators(min_date, max_date)
-	Gcollab = get_db_graph(Graph.COLLAB, uid, collab)
+	Gcollab = get_collab_graph(db, uid, min_date, max_date)
 	return Gcollab
 
 def small_date1():

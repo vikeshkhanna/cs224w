@@ -11,12 +11,12 @@ def getFeatures(baseG, Gcollab_delta, featG, pairs):
 		uNode= baseG.GetNI(u)
 		vNode= baseG.GetNI(v)
 
-		d1 = featG.created_at(u,v).replace(tzinfo=None)
-		d2 = Gcollab_delta.created_at(u,v).replace(tzinfo=None)
+		d1 = featG.created_at(u,v)
+		d2 = Gcollab_delta.created_at(u,v)
 
 		# see if both of these nodes are in feat graph 
 		# Note - Feature Graphs may overlap delta graph. In this case, ensure that the edge was first formed in featG
-		if not (featG.IsNode(u) and featG.IsNode(v)) or d1 > d2:
+		if not (featG.IsNode(u) and featG.IsNode(v)):
 			# delete this pair from the pair dict
 			delset.add((u, v))
 			continue
@@ -42,7 +42,7 @@ def get_features(featG, u, v):
 	# If either node does not exist in the feature graph
 	# Not the first -1 is because GetWeight returns -1 for no edge
 	if not featG.IsNode(u) or not featG.IsNode(v):
-		return [featG.GetWeight(u,v),0,0,0]
+		return [featG.GetWeight(u,v), 0, 0, 0]
 
 	uFNode = featG.GetNI(u)
 	vFNode = featG.GetNI(v)
@@ -75,7 +75,6 @@ def get_walk_features(Gcollab, feature_graphs, start):
 	for vnode in Gcollab.Nodes():
 		v = vnode.GetId()
 		#if start!=v:
-
 		tup = (start, v)
 		features[tup] = get_all_features(feature_graphs, start, v)
 		

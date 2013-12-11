@@ -1,7 +1,9 @@
 db/github.2012_4_12.2012_6_17.db 2012-05-17 2012-06-17 
 db/github.2012_4_12.2013_1_21.db 2012-10-17 2013-01-21
+db/github.2013_9_12.2013_12_14.db 2013-11-25 2013-12-14 2013-09-12 
 
-python train.py db/github.2012_4_12.2012_8_14.db 2012-07-14 2012-08-14 2 github
+python predict.py db/github.2013_9_12.2013_12_14.db 2013-12-12 vikeshkhanna
+python train.py db/github.2013_9_12.2013_12_14.db 2013-11-12 2013-12-14 2013-09-12 2 0 github4
 python properties_collab.py db/github.2012_4_12.2012_6_17.db 2012-05-17 2012-06-17 hops
 python test.py db/github.2012_4_12.2012_6_17.db 2012-05-17 2012-06-17 2 
 

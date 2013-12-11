@@ -32,17 +32,18 @@ def main(args):
 
 	base_graphs = graphutils.get_base_dict(Gcollab_base, feature_graphs)
 	graphutils.print_stats(base_graphs)
+	graphutils.print_graph_stats("Gcollab_delta", Gcollab_delta)
 
 	filepath = os.path.join(LEARNING_ROOT, basename + ".mat")
 	features_matrix_name = "%s_%s"%(basename, FEATURES)
 	labels_matrix_name = "%s_%s"%(basename, LABELS)
 
 	features = consolidateFeatures.consolidate_features_add(base_graphs, k, Gcollab_delta)
-	#features = consolidateFeatures.consolidate_features(base_graphs, k)
+	#features = consolidateFeatures.consolidate_features(base_graphs, Gcollab_delta, k)
 	labels = consolidateFeatures.consolidate_labels(features, Gcollab_delta)
 
 	np_train, np_output = interface.matwrapTrain(features, labels)
-	interface.writeTrain(np_train, np.transpose(np_output), filepath, features_matrix_name, labels_matrix_name)	
+	interface.writeTrain(np_train, np_output, filepath, features_matrix_name, labels_matrix_name)	
 	
 	# Add learning root to mlab path so that all .m functions are available as mlab attributes
 	mlab.path(mlab.path(), LEARNING_ROOT)	
@@ -54,7 +55,7 @@ def main(args):
 # based on the basename. It also needs the k (number of hops) parameter
 if __name__=="__main__":
 	if len(sys.argv)<6:
-		print("Usage: program.py <db> <date1> <date2> <k hops> <basename mat>")
+		print("Usage: program.py <db> <date1> <date2> <date3> <k hops> <basename mat>")
 		sys.exit(1)
 	
 	main(sys.argv[1:])
