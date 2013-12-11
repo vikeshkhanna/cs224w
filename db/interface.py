@@ -147,9 +147,11 @@ class DBReadQuery:
 
 class DBReader(DBBase):
 	def uid(self):
+		print("Starting uid query")
 		comm = "SELECT rowid, userid FROM user"
 		rows = self.conn.execute(comm).fetchall()
 		cache = {row[1]:row[0] for row in rows}
+		print("uid query complete: %d"%len(cache))
 		return cache
 		
 	# Date format must be - YYYY-MM-DD HH:mm:ss
@@ -186,26 +188,69 @@ class DBReader(DBBase):
 	
 	# Date format must be - YYYY-MM-DD HH:mm:ss
 	def collaborators(self, min_date=None, max_date=None):
+		print("Starting collab query")
 		comm = DBReadQuery.all_collaborators
 		comm = self.dbclip(comm, min_date, max_date)	
-		return self.conn.execute(comm).fetchall()
+		rows = self.conn.execute(comm).fetchall()
+		print("Collab query complete : %d"%len(rows))
+		return rows
 		#return self.clip(rows, 2, min_date, max_date)
 	
+	def only_collab(self, min_date=None, max_date=None):
+		print("Starting only collab query")
+		comm = DBReadQuery.only_collaborators
+		comm = self.dbclip(comm, min_date, max_date)	
+		rows = self.conn.execute(comm).fetchall()
+		print("Only collab query complete : %d"%len(rows))
+		return rows
 
 	# Date format must be - YYYY-MM-DD HH:mm:ss
 	def followers(self, min_date=None, max_date=None):
+		print("Starting follow query")
 		comm = DBReadQuery.all_followers
 		comm = self.dbclip(comm, min_date, max_date)
-		return self.conn.execute(comm).fetchall()
+		rows = self.conn.execute(comm).fetchall()
+		print("Follow query complete: %d"%len(rows))
+		return rows
 
 	def pull(self, min_date=None, max_date=None):
+		print("Starting pull query")
 		comm = self.dbclip(DBReadQuery.all_pull, min_date, max_date)
-		return self.conn.execute(comm).fetchall()
+		rows = self.conn.execute(comm).fetchall()
+		print("Pull query complete: %d"%len(rows))
+		return rows
 
 	def watch(self, min_date=None, max_date=None):
+		print("Starting watch query")
 		comm = self.dbclip(DBReadQuery.all_watch, min_date, max_date)
-		return self.conn.execute(comm).fetchall()
+		rows = self.conn.execute(comm).fetchall()
+		print("Watch query complete: %d"%len(rows))
+		return rows
 
+	def fork(self, min_date=None, max_date=None):
+		print("Starting fork query")
+		comm = self.dbclip(DBReadQuery.all_fork, min_date, max_date)
+		rows = self.conn.execute(comm).fetchall()
+		print("Fork query complete: %d"%len(rows))
+		return rows
+
+	def get_user(self, rowid):
+		print("Starting user query for %s"%rowid)
+		comm = "SELECT userid FROM user where rowid=?"
+		ids = (rowid, )
+		user = self.conn.execute(comm, ids).fetchone()
+		print("User query complete")
+		return user[0]
+
+	def get_users(self, rowids):
+		print("Starting users query")
+		cache = {}
+
+		for rowid in rowids:
+			cache[rowid] = self.get_user(rowid)
+		
+		return cache
+		
 	# returns the cursor
 	def execute(self, comm):
 		return self.conn.execute(comm)
@@ -222,7 +267,9 @@ class DBReadQuery:
 	'''
 
 	#all_collaborators = "SELECT * FROM (SELECT * from gcollab union select * from gpull)";
+	only_collaborators = "SELECT * from gcollab"
 	all_collaborators = "SELECT * FROM gpull";
 	all_pull = "SELECT * from gpull";
 	all_followers = "SELECT *, 0 from follows";
 	all_watch = "SELECT * from gwatch";
+	all_fork = "SELECT * from gfork";

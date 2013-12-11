@@ -10,13 +10,14 @@ class Graph:
 	WATCH = 'Gwatch'
 	FORK = 'Gfork'
 
-def construct(edgelist):
+def construct(graph_type, edgelist):
 	G = snapext.EUNGraph()
 
 	for edge in edgelist:
 		u = edge[0]
 		v = edge[1]
 		created_at = edge[2]
+
 		weight= edge[3] + 1
 
 		if not G.IsNode(u):
@@ -41,8 +42,6 @@ def getKHopN(G, node, k):
 			s.add(item)
 	return s
 
-		
-	
 def getSubGraph(G, source, k):
 	nodes= getKHopN(G, source, k)
 	# to nodes add all the neighbors of source
@@ -65,13 +64,20 @@ def get_db_graph(graph_type, uid, dbresponse):
 
 	for row in dbresponse:
 		try:
-			edgelist.append((uid[row[0]], uid[row[1]], row[2], row[3]))
+			# Follow graph has the weight after jday. Sad. 
+			if graph_type==Graph.FOLLOW:
+				weight = row[4]
+			else:
+				weight = row[3]
+
+			edgelist.append((uid[row[0]], uid[row[1]], row[2], weight))
+
 		except KeyError:
 			#sys.stderr.write("Skipping %s, %s as one of them was not in uid\n"%(row[0], row[1]))
 			pass
 			# Ignore if some user is not found in uid
 
-	return construct(edgelist)
+	return construct(graph_type, edgelist)
 
 def get_db_graphs(db, uid, min_date=None, max_date=None):
 	reader = DBReader(db)
@@ -89,7 +95,7 @@ def get_db_graphs(db, uid, min_date=None, max_date=None):
 	watch = reader.watch(min_date, max_date)
 	Gwatch = get_db_graph(Graph.WATCH, uid, watch)
 
-	fork = reader.watch(min_date, max_date)
+	fork = reader.fork(min_date, max_date)
 	Gfork = get_db_graph(Graph.FORK, uid, fork)
 
 	reader.close()
@@ -106,9 +112,8 @@ def get_feat_graphs(db, uid, min_date=None, max_date=None):
 	watch = reader.watch(min_date, max_date)
 	Gwatch = get_db_graph(Graph.WATCH, uid, watch)
 
-
 	print("Getting Gfork")
-	fork = reader.watch(min_date, max_date)
+	fork = reader.fork(min_date, max_date)
 	Gfork = get_db_graph(Graph.FORK, uid, fork)
 
 	reader.close()
@@ -134,6 +139,14 @@ def get_collab_graph(db, uid, min_date=None, max_date=None):
 	reader.close()
 	return Gcollab	
 
+def get_only_collab_graph(db, uid, min_date=None, max_date=None):
+	reader = DBReader(db)
+	print("Getting Only Collab graph")
+	collab = reader.only_collab(min_date, max_date)
+	Gcollab = get_db_graph(Graph.COLLAB, uid, collab)
+	reader.close()
+	return Gcollab	
+
 def split_feat_graphs(base_graphs):
 	feature_graphs = []
 
@@ -156,9 +169,10 @@ def get_reverse_graph_map(base_graphs):
 
 	return rmap
 
+def print_graph_stats(name, G):
+	print("Graph type: %s"%name)
+	print("Graph Nodes: %d. Edges= %d"%(G.GetNodes(), G.GetEdges()))
+
 def print_stats(base_graphs):
 	for key, val in base_graphs.iteritems():
-		print("Graph type: %s"%key)
-		print("Graph Nodes: %d. Edges= %d"%(val.GetNodes(), val.GetEdges()))
-
-
+		print_graph_stats(key, val)
