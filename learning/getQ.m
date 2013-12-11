@@ -4,7 +4,7 @@ function Q = getQ(Ai, Aj, Av, F, src, beta, model)
 	[n_nodes, n_features]= size(F);
 	A = sparse(double(Ai), double(Aj), double(Av));
 
-	n_edges= size(Ai);	% not the actual number of edges
+	n_edges= size(Ai,1);	% not the actual number of edges
 
 	disp(size(F));
 	disp(n_nodes);
