@@ -1,0 +1,168 @@
+<html>
+	<head>
+		<title>CS224W Final Project</title>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+		<style>
+			body {
+			  padding-top: 40px;
+			  padding-bottom: 40px;
+			  background-color: #eee;
+			}
+
+			.form-signin {
+			  max-width: 330px;
+			  padding: 15px;
+			  margin: 0 auto;
+			}
+			.form-signin .form-signin-heading,
+			.form-signin .checkbox {
+			  margin-bottom: 10px;
+			}
+			.form-signin .checkbox {
+			  font-weight: normal;
+			}
+			.form-signin .form-control {
+			  position: relative;
+			  font-size: 16px;
+			  height: auto;
+			  padding: 10px;
+			  -webkit-box-sizing: border-box;
+			     -moz-box-sizing: border-box;
+				  box-sizing: border-box;
+			}
+			.form-signin .form-control:focus {
+			  z-index: 2;
+			}
+			.form-signin input[type="text"] {
+			  margin-bottom: -1px;
+			  border-bottom-left-radius: 0;
+			  border-bottom-right-radius: 0;
+			}
+			.form-signin input[type="password"] {
+			  margin-bottom: 10px;
+			  border-top-left-radius: 0;
+			  border-top-right-radius: 0;
+			}
+			.form-signin	
+			{
+				text-align:center;
+			}
+			.form-signin img
+			{
+				width:25px;
+				height:25px;
+				margin:20px;
+			}
+
+			#results img
+			{
+				padding:10px;
+				margin:10px;
+				width:50px;
+				height:50px;
+			}
+
+			#results a
+			{
+				float:left;
+				display:block;
+				text-decoration:none;
+			}
+		
+			#results span
+			{
+				padding:10px;
+			}
+		</style>
+		
+		<script>
+			root = "http://171.64.15.3:8000/"
+
+
+			function wait()
+			{
+					$("#recommend").addClass("disabled");
+					$("#preloader").show();
+			}	
+
+			function done()
+			{
+					$("#recommend").removeClass("disabled");
+					$("#preloader").hide();
+			}
+
+			function get_pic(userid, callback)
+			{
+				root = "https://api.github.com/users/"
+			
+				// I know this should never be done, but this is just for the demo. Hopefully I will remember and remove it before you can even read this. Hope springs eternal.
+				url = root+userid + "?client_id=00e80b24f468782bbc2c&client_secret=060972b82f0cd93a84c8201d13a233304fdabe0e";
+
+				$.ajax({
+					url:url,
+					dataType:'json',
+					success: function(response){
+						callback(userid, response['avatar_url']);
+					}	
+				});		
+			}
+
+			$("document").ready(function(){
+				$("#preloader").hide();
+
+				$("#recommend").click(function(){
+					id = $("#userid").val();
+					$("#results").empty();
+
+					wait();
+
+					$.ajax({
+						url:root+id,
+
+						success:function(response){
+
+							for(var i=0;i<response.length;i++)
+							{	
+								userid = response[i];
+
+								get_pic(userid, function(userid, pic){
+										$("#results").append("<a href='http://github.com/"+ userid  +"' target='_blank''><img src='" + pic + "' /><span>" + userid + "</span></a>");
+									});
+
+								console.log(response[i]);
+							}
+
+							done();
+						},
+						dataType: 'json',
+
+						error: function(response){
+							alert(response['responseText']);
+							done();
+							console.log(response);
+						}
+					});	
+				});
+			});
+
+		</script>
+	</head>
+	<body>
+	  <div class="container">
+	      <form action="#" class="form-signin">
+			<h2 class="form-signin-heading">Please enter userid</h2>
+			<input type="text" class="form-control" placeholder="User id" required autofocus id="userid" > <br / >
+			<button class="btn btn-lg btn-primary btn-block" id="recommend">Recommend</button>
+			<img src="img/preloader.gif" id="preloader" />
+	      </form>
+
+	
+		<div class="results" id="results">
+			
+		</div>
+    	  </div> <!-- /container -->
+	</body>
+</html>
